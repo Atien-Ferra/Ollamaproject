@@ -1,8 +1,9 @@
 langchain-core
-langchain-community
 langchain-text-splitters
 langchain-ollama
 langchain-chroma
 chromadb
 pypdf
 deepeval
+# DeepEval's result cache needs real file locks on Windows
+portalocker[win32]; sys_platform == "win32"

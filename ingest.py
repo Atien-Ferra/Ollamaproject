@@ -4,10 +4,9 @@ Usage: python ingest.py [--reset]
 """
 import argparse
 import shutil
-from pathlib import Path
-
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from pypdf import PdfReader
 
 import config
 from rag import vector_store
@@ -28,9 +27,10 @@ def main():
 
     pages = []
     for pdf in pdfs:
-        loaded = PyPDFLoader(str(pdf)).load()
-        for page in loaded:
-            page.metadata["source"] = Path(pdf).name
+        loaded = [
+            Document(page_content=page.extract_text() or "", metadata={"source": pdf.name, "page": i})
+            for i, page in enumerate(PdfReader(pdf).pages)
+        ]
         pages.extend(loaded)
         print(f"Loaded {pdf.name}: {len(loaded)} pages")
 

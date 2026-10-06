@@ -4,8 +4,15 @@ Edit eval_questions.json with questions (and optional expected answers) about yo
 Usage: python evaluate.py
 """
 import json
+import os
+
+# A local judge is slow and handles one request at a time, so DeepEval's default
+# per-task timeout cancels the run. Must be set before deepeval is imported.
+os.environ.setdefault("DEEPEVAL_DISABLE_TIMEOUTS", "1")
+os.environ.setdefault("DEEPEVAL_TELEMETRY_OPT_OUT", "YES")
 
 from deepeval import evaluate
+from deepeval.evaluate import AsyncConfig
 from deepeval.metrics import (
     AnswerRelevancyMetric,
     ContextualRelevancyMetric,
@@ -39,7 +46,7 @@ def main():
         FaithfulnessMetric(model=judge, threshold=0.7),
         ContextualRelevancyMetric(model=judge, threshold=0.5),
     ]
-    evaluate(test_cases=test_cases, metrics=metrics)
+    evaluate(test_cases=test_cases, metrics=metrics, async_config=AsyncConfig(run_async=False))
 
 
 if __name__ == "__main__":
