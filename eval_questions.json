@@ -1,0 +1,9 @@
+[
+  {
+    "question": "Replace this with a question your PDFs can answer.",
+    "expected_answer": "Optional: the answer you expect."
+  },
+  {
+    "question": "Add as many questions as you like."
+  }
+]
